@@ -135,9 +135,9 @@ export default function CardBrowser() {
           Loading...
         </div>
       ) : cards.length === 0 ? (
-        <div className="brutal-border brutal-shadow bg-white p-12 text-center">
+        <div className="content-card p-12 text-center">
           <p className="text-xl font-bold mb-2">没有卡片</p>
-          <p className="text-ink/60 text-sm">
+          <p className="text-ink/50 text-sm">
             运行 extract → analyze → push 来生成卡片
           </p>
         </div>

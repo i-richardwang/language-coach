@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, type Card } from "../api";
 
-const TYPE_BG: Record<string, string> = {
-  "复述澄清": "bg-[#FEE2E2]",
-  "精准用词": "bg-[#CCFBF1]",
-  "结构化表达": "bg-[#FEF3C7]",
-  "概念命名": "bg-[#EDE9FE]",
+const TYPE_ACCENT: Record<string, string> = {
+  "复述澄清": "border-coral bg-coral/6",
+  "精准用词": "border-teal bg-teal/6",
+  "结构化表达": "border-yellow bg-yellow/6",
+  "概念命名": "border-purple bg-purple/6",
 };
 
 export default function Flashcard() {
@@ -79,14 +79,14 @@ export default function Flashcard() {
 
   if (!current) {
     return (
-      <div className="brutal-border brutal-shadow bg-white p-12 text-center max-w-lg mx-auto">
+      <div className="content-card p-12 text-center max-w-lg mx-auto">
         <p className="text-2xl font-bold mb-2">全部看完了!</p>
-        <p className="text-ink/60">没有更多卡片了</p>
+        <p className="text-ink/50">没有更多卡片了</p>
       </div>
     );
   }
 
-  const bg = TYPE_BG[current.type] || "bg-white";
+  const accent = TYPE_ACCENT[current.type] || "border-ink/20 bg-ink/3";
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -109,19 +109,19 @@ export default function Flashcard() {
       {/* Card */}
       <div
         onClick={() => !flipped && setFlipped(true)}
-        className={`brutal-border brutal-shadow-lg ${bg} p-8 min-h-[320px] flex flex-col justify-center cursor-pointer select-none`}
+        className="content-card p-8 min-h-[320px] flex flex-col justify-center cursor-pointer select-none"
       >
         {/* Context hint */}
-        <div className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-4 text-center">
+        <div className="text-xs font-bold uppercase tracking-widest text-ink/30 mb-6 text-center">
           {current.contextHint}
         </div>
 
         {/* Front: userSaid */}
         <div className="text-center mb-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 mb-2">
             你说
           </p>
-          <p className="text-xl font-[family-name:var(--font-mono)] leading-relaxed">
+          <p className="text-xl leading-relaxed text-ink/60">
             "{current.userSaid}"
           </p>
         </div>
@@ -129,15 +129,15 @@ export default function Flashcard() {
         {/* Back: aiPhrased (revealed) */}
         {flipped ? (
           <div className="text-center animate-[fadeUp_200ms_ease-out]">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 mb-3">
               可以说
             </p>
-            <p className="text-xl font-bold leading-relaxed brutal-border bg-ink text-cream p-4 inline-block">
+            <p className={`text-xl font-semibold leading-relaxed border-2 ${accent} p-5 inline-block`}>
               "{current.aiPhrased}"
             </p>
 
             {(current.vocab.length > 0 || current.pattern) && (
-              <div className="flex flex-wrap gap-1.5 justify-center mt-4">
+              <div className="flex flex-wrap gap-1.5 justify-center mt-5">
                 {current.vocab.map((v) => (
                   <span
                     key={v}
@@ -155,7 +155,7 @@ export default function Flashcard() {
             )}
           </div>
         ) : (
-          <p className="text-center text-ink/30 text-sm mt-4">
+          <p className="text-center text-ink/25 text-sm mt-4">
             点击翻转 · space / enter
           </p>
         )}
@@ -186,7 +186,7 @@ export default function Flashcard() {
       )}
 
       {/* Keyboard hints */}
-      <div className="text-center mt-6 text-[10px] text-ink/30 font-[family-name:var(--font-mono)]">
+      <div className="text-center mt-6 text-[10px] text-ink/25 font-[family-name:var(--font-mono)]">
         ← prev · space flip · → next · 1/2/3 review
       </div>
     </div>

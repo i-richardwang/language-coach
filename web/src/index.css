@@ -84,21 +84,27 @@ body {
 }
 
 @utility card-paraphrase {
-  background-color: #FEE2E2;
-  border-color: var(--color-coral);
+  border-left: 4px solid var(--color-coral);
 }
 
 @utility card-wording {
-  background-color: #CCFBF1;
-  border-color: var(--color-teal);
+  border-left: 4px solid var(--color-teal);
 }
 
 @utility card-structure {
-  background-color: #FEF3C7;
-  border-color: var(--color-yellow);
+  border-left: 4px solid var(--color-yellow);
 }
 
 @utility card-naming {
-  background-color: #EDE9FE;
-  border-color: var(--color-purple);
+  border-left: 4px solid var(--color-purple);
+}
+
+@utility content-card {
+  background: white;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.06);
+  transition: box-shadow 160ms ease;
+  &:hover {
+    box-shadow: 0 2px 8px rgba(26, 26, 26, 0.1);
+  }
 }
