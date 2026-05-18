@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { api, type Card } from "../api";
+import { api, type Card } from "@/api";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const TYPE_ACCENT: Record<string, string> = {
   "复述澄清": "border-coral bg-coral/6",
@@ -71,7 +73,7 @@ export default function Flashcard() {
 
   if (loading) {
     return (
-      <div className="text-center py-20 text-ink/40 font-bold text-xl">
+      <div className="text-center py-20 text-muted-foreground font-bold text-xl">
         Loading...
       </div>
     );
@@ -81,26 +83,26 @@ export default function Flashcard() {
     return (
       <div className="content-card p-12 text-center max-w-lg mx-auto">
         <p className="text-2xl font-bold mb-2">全部看完了!</p>
-        <p className="text-ink/50">没有更多卡片了</p>
+        <p className="text-muted-foreground">没有更多卡片了</p>
       </div>
     );
   }
 
-  const accent = TYPE_ACCENT[current.type] || "border-ink/20 bg-ink/3";
+  const accent = TYPE_ACCENT[current.type] || "border-input bg-muted/50";
 
   return (
     <div className="max-w-2xl mx-auto">
       {/* Progress */}
       <div className="mb-6">
-        <div className="flex justify-between text-xs font-bold mb-1 font-[family-name:var(--font-mono)]">
+        <div className="flex justify-between text-xs font-bold mb-1 font-mono">
           <span>
             {index + 1} / {total}
           </span>
           <span>{current.type}</span>
         </div>
-        <div className="brutal-border bg-white h-4 overflow-hidden">
+        <div className="border border-border bg-card h-3 rounded-sm overflow-hidden">
           <div
-            className="h-full bg-ink transition-all duration-300"
+            className="h-full bg-foreground rounded-sm transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -112,16 +114,16 @@ export default function Flashcard() {
         className="content-card p-8 min-h-[320px] flex flex-col justify-center cursor-pointer select-none"
       >
         {/* Context hint */}
-        <div className="text-xs font-bold uppercase tracking-widest text-ink/30 mb-6 text-center">
+        <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6 text-center">
           {current.contextHint}
         </div>
 
         {/* Front: userSaid */}
         <div className="text-center mb-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
             你说
           </p>
-          <p className="text-xl leading-relaxed text-ink/60">
+          <p className="text-xl leading-relaxed text-foreground/60">
             "{current.userSaid}"
           </p>
         </div>
@@ -129,33 +131,30 @@ export default function Flashcard() {
         {/* Back: aiPhrased (revealed) */}
         {flipped ? (
           <div className="text-center animate-[fadeUp_200ms_ease-out]">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 mb-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
               可以说
             </p>
-            <p className={`text-xl font-semibold leading-relaxed border-2 ${accent} p-5 inline-block`}>
+            <p className={`text-xl font-semibold leading-relaxed border-2 rounded-md ${accent} p-5 inline-block`}>
               "{current.aiPhrased}"
             </p>
 
             {(current.vocab.length > 0 || current.pattern) && (
               <div className="flex flex-wrap gap-1.5 justify-center mt-5">
                 {current.vocab.map((v) => (
-                  <span
-                    key={v}
-                    className="brutal-border brutal-shadow-sm bg-yellow px-2 py-0.5 text-xs font-bold"
-                  >
+                  <Badge key={v} variant="secondary" className="bg-yellow text-foreground font-bold">
                     {v}
-                  </span>
+                  </Badge>
                 ))}
                 {current.pattern && (
-                  <span className="brutal-border brutal-shadow-sm bg-lime px-2 py-0.5 text-xs font-[family-name:var(--font-mono)]">
+                  <Badge variant="secondary" className="bg-lime text-foreground font-mono">
                     {current.pattern}
-                  </span>
+                  </Badge>
                 )}
               </div>
             )}
           </div>
         ) : (
-          <p className="text-center text-ink/25 text-sm mt-4">
+          <p className="text-center text-muted-foreground/50 text-sm mt-4">
             点击翻转 · space / enter
           </p>
         )}
@@ -164,29 +163,31 @@ export default function Flashcard() {
       {/* Actions */}
       {flipped && (
         <div className="flex gap-3 mt-5 justify-center animate-[fadeUp_150ms_ease-out]">
-          <button
+          <Button
             onClick={() => handleReview("learned")}
-            className="brutal-btn bg-teal text-white text-sm flex-1 max-w-[140px]"
+            className="bg-teal text-white flex-1 max-w-[140px]"
           >
             ✓ 掌握 <kbd className="ml-1 text-[10px] opacity-70">1</kbd>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="secondary"
             onClick={() => handleReview("learning")}
-            className="brutal-btn bg-yellow text-ink text-sm flex-1 max-w-[140px]"
+            className="bg-yellow text-foreground flex-1 max-w-[140px]"
           >
             ↻ 再看 <kbd className="ml-1 text-[10px] opacity-70">2</kbd>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => handleReview("skipped")}
-            className="brutal-btn bg-white text-ink/50 text-sm flex-1 max-w-[140px]"
+            className="flex-1 max-w-[140px]"
           >
             ✕ 跳过 <kbd className="ml-1 text-[10px] opacity-70">3</kbd>
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Keyboard hints */}
-      <div className="text-center mt-6 text-[10px] text-ink/25 font-[family-name:var(--font-mono)]">
+      <div className="text-center mt-6 text-[10px] text-muted-foreground/50 font-mono">
         ← prev · space flip · → next · 1/2/3 review
       </div>
     </div>

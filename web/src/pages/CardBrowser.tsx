@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { api, type Card as CardType, type Stats } from "../api";
-import Card from "../components/Card";
+import { api, type Card as CardType, type Stats } from "@/api";
+import Card from "@/components/Card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CardBrowser() {
   const [cards, setCards] = useState<CardType[]>([]);
@@ -46,21 +56,21 @@ export default function CardBrowser() {
       {/* Stats bar */}
       {stats && (
         <div className="flex flex-wrap gap-3 mb-6">
-          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2">
+          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
             <span className="text-3xl font-bold">{stats.totalCards}</span>
-            <span className="text-xs ml-1 text-ink/60">cards</span>
+            <span className="text-xs text-muted-foreground">cards</span>
           </div>
-          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2">
+          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
             <span className="text-3xl font-bold">{stats.totalSessions}</span>
-            <span className="text-xs ml-1 text-ink/60">sessions</span>
+            <span className="text-xs text-muted-foreground">sessions</span>
           </div>
           {Object.entries(stats.byType).map(([t, n]) => (
             <div
               key={t}
-              className="brutal-border brutal-shadow-sm bg-white px-3 py-2 text-sm"
+              className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm"
             >
-              <span className="font-bold">{n}</span>{" "}
-              <span className="text-ink/60">{t}</span>
+              <span className="font-bold">{n}</span>
+              <span className="text-muted-foreground">{t}</span>
             </div>
           ))}
         </div>
@@ -69,75 +79,74 @@ export default function CardBrowser() {
       {/* Filter bar */}
       <form
         onSubmit={handleSearch}
-        className="brutal-border brutal-shadow bg-white p-4 mb-6 flex flex-wrap gap-3 items-end"
+        className="content-card p-4 mb-6 flex flex-wrap gap-4 items-end"
       >
-        <div>
-          <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">
-            类型
-          </label>
-          <select
-            value={filter.type}
-            onChange={(e) => setFilter((f) => ({ ...f, type: e.target.value }))}
-            className="brutal-border px-3 py-1.5 bg-cream text-sm font-bold"
+        <div className="space-y-1.5">
+          <Label>类型</Label>
+          <Select
+            value={filter.type || undefined}
+            onValueChange={(v) => setFilter((f) => ({ ...f, type: v === "__all__" ? "" : (v ?? "") }))}
           >
-            <option value="">全部</option>
-            {types.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="全部" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">全部</SelectItem>
+              {types.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div>
-          <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">
-            状态
-          </label>
-          <select
-            value={filter.status}
-            onChange={(e) =>
-              setFilter((f) => ({ ...f, status: e.target.value }))
-            }
-            className="brutal-border px-3 py-1.5 bg-cream text-sm font-bold"
+        <div className="space-y-1.5">
+          <Label>状态</Label>
+          <Select
+            value={filter.status || undefined}
+            onValueChange={(v) => setFilter((f) => ({ ...f, status: v === "__all__" ? "" : (v ?? "") }))}
           >
-            <option value="">全部</option>
-            <option value="new">New</option>
-            <option value="learning">Learning</option>
-            <option value="learned">Learned</option>
-            <option value="skipped">Skipped</option>
-          </select>
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="全部" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">全部</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="learning">Learning</SelectItem>
+              <SelectItem value="learned">Learned</SelectItem>
+              <SelectItem value="skipped">Skipped</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="flex-1 min-w-[200px]">
-          <label className="text-[10px] font-bold uppercase tracking-widest block mb-1">
-            搜索
-          </label>
-          <div className="flex gap-2">
-            <input
+        <div className="flex-1 min-w-[200px] space-y-1.5">
+          <Label>搜索</Label>
+          <div className="flex gap-2 items-center">
+            <Input
               type="text"
               value={filter.q}
               onChange={(e) =>
                 setFilter((f) => ({ ...f, q: e.target.value }))
               }
               placeholder="搜索词汇或表达..."
-              className="brutal-border px-3 py-1.5 bg-cream text-sm flex-1"
             />
-            <button type="submit" className="brutal-btn bg-ink text-cream text-sm">
+            <Button type="submit" variant="default" className="shrink-0">
               Go
-            </button>
+            </Button>
           </div>
         </div>
       </form>
 
       {/* Card grid */}
       {loading ? (
-        <div className="text-center py-12 text-ink/40 font-bold text-xl">
+        <div className="text-center py-12 text-muted-foreground font-bold text-xl">
           Loading...
         </div>
       ) : cards.length === 0 ? (
         <div className="content-card p-12 text-center">
           <p className="text-xl font-bold mb-2">没有卡片</p>
-          <p className="text-ink/50 text-sm">
+          <p className="text-muted-foreground text-sm">
             运行 extract → analyze → push 来生成卡片
           </p>
         </div>
