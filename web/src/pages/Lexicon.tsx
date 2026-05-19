@@ -14,8 +14,8 @@ export default function Lexicon() {
 
   if (!data) {
     return (
-      <div className="text-center py-20 text-muted-foreground font-bold text-xl">
-        Loading...
+      <div className="text-center py-20 text-muted-foreground text-sm">
+        加载中...
       </div>
     );
   }
@@ -40,9 +40,9 @@ export default function Lexicon() {
             句式 ({data.patterns.length})
           </Button>
         </div>
-        <Badge variant="outline" className="text-sm px-3 py-1">
-          共 <span className="font-bold">{data.cardTotal}</span> 张卡片
-        </Badge>
+        <span className="text-sm text-muted-foreground">
+          共 <span className="font-semibold text-foreground">{data.cardTotal}</span> 张卡片
+        </span>
       </div>
 
       {/* Vocab list */}
@@ -57,10 +57,13 @@ export default function Lexicon() {
                 className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="bg-yellow text-foreground font-bold w-8 h-6 justify-center">
+                  <Badge
+                    variant="secondary"
+                    className="bg-yellow text-foreground font-bold w-8 h-6 justify-center"
+                  >
                     {v.count}
                   </Badge>
-                  <span className="font-semibold text-lg">{v.word}</span>
+                  <span className="font-semibold text-base">{v.word}</span>
                 </div>
                 <span className="text-xs text-muted-foreground font-mono">
                   {v.sessions.length} session(s)
@@ -69,7 +72,7 @@ export default function Lexicon() {
 
               {expanded === v.word && v.examples.length > 0 && (
                 <div className="px-5 pb-4 pt-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
                     例句
                   </p>
                   {v.examples.map((ex, i) => (
@@ -86,7 +89,7 @@ export default function Lexicon() {
           ))}
 
           {data.vocab.length === 0 && (
-            <div className="p-8 text-center text-muted-foreground">
+            <div className="p-8 text-center text-muted-foreground text-sm">
               暂无词汇数据
             </div>
           )}
@@ -102,12 +105,13 @@ export default function Lexicon() {
               className="px-5 py-3.5 flex items-center justify-between hover:bg-muted/50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="bg-lime text-foreground font-bold w-8 h-6 justify-center">
+                <Badge
+                  variant="secondary"
+                  className="bg-lime text-foreground font-bold w-8 h-6 justify-center"
+                >
                   {p.count}
                 </Badge>
-                <span className="font-mono text-sm">
-                  {p.pattern}
-                </span>
+                <span className="font-mono text-sm">{p.pattern}</span>
               </div>
               <span className="text-xs text-muted-foreground font-mono">
                 {p.sessions.length} session(s)
@@ -116,7 +120,7 @@ export default function Lexicon() {
           ))}
 
           {data.patterns.length === 0 && (
-            <div className="p-8 text-center text-muted-foreground">
+            <div className="p-8 text-center text-muted-foreground text-sm">
               暂无句式数据
             </div>
           )}
