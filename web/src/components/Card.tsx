@@ -25,13 +25,15 @@ const TYPE_ACCENT: Record<string, string> = {
 
 interface CardProps {
   card: CardType;
-  onReview?: (id: number, status: string) => void;
+  onFavorite?: (id: number, value: boolean) => void;
+  onHide?: (id: number, value: boolean) => void;
   compact?: boolean;
 }
 
-export default function Card({ card, onReview, compact }: CardProps) {
+export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
   const style = TYPE_STYLES[card.type] || "";
   const accent = TYPE_ACCENT[card.type] || "border-ink/20";
+  const showActions = onFavorite || onHide;
 
   return (
     <article
@@ -42,11 +44,18 @@ export default function Card({ card, onReview, compact }: CardProps) {
         <Badge variant="outline" className="font-mono text-xs uppercase tracking-wider">
           {TYPE_EMOJI[card.type] || "📝"} {card.type}
         </Badge>
-        {card.contextHint && (
-          <span className="text-xs text-muted-foreground font-mono">
-            {card.contextHint}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {card.favorite && (
+            <span className="text-xs font-mono text-coral" title="已收藏">
+              ★
+            </span>
+          )}
+          {card.contextHint && (
+            <span className="text-xs text-muted-foreground font-mono">
+              {card.contextHint}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* User said */}
@@ -86,36 +95,32 @@ export default function Card({ card, onReview, compact }: CardProps) {
       )}
 
       {/* Actions */}
-      {onReview && (
-        <div className="flex gap-2 mt-4 pt-3 border-t-2 border-foreground/15">
-          {card.reviewStatus !== "learned" && (
+      {showActions && (
+        <div className="flex gap-2 mt-4 pt-3 border-t-2 border-foreground/15 items-center">
+          {onFavorite && (
             <Button
               size="sm"
-              variant="default"
-              className="bg-teal text-white"
-              onClick={() => onReview(card.id, "learned")}
+              variant={card.favorite ? "default" : "outline"}
+              className={card.favorite ? "bg-coral text-white" : ""}
+              onClick={() => onFavorite(card.id, !card.favorite)}
             >
-              ✓ 掌握
+              {card.favorite ? "★ 已收藏" : "☆ 收藏"}
             </Button>
           )}
-          {card.reviewStatus !== "learning" && (
+          {onHide && (
             <Button
               size="sm"
-              variant="secondary"
-              className="bg-yellow text-foreground"
-              onClick={() => onReview(card.id, "learning")}
+              variant={card.hidden ? "default" : "outline"}
+              className={card.hidden ? "bg-foreground text-background" : ""}
+              onClick={() => onHide(card.id, !card.hidden)}
             >
-              ↻ 再看
+              {card.hidden ? "🙈 已隐藏" : "🙈 隐藏"}
             </Button>
           )}
-          {card.reviewStatus !== "skipped" && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => onReview(card.id, "skipped")}
-            >
-              ✕ 跳过
-            </Button>
+          {card.viewCount > 0 && (
+            <span className="ml-auto text-[10px] font-mono text-muted-foreground">
+              看过 {card.viewCount} 次
+            </span>
           )}
         </div>
       )}

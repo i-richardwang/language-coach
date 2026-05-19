@@ -29,14 +29,18 @@ export interface Card {
   userLine: number | null;
   aiLine: number | null;
   createdAt: string;
-  reviewStatus: string;
+  favorite: boolean;
+  hidden: boolean;
+  viewCount: number;
+  lastViewedAt: string | null;
 }
 
 export interface Stats {
   totalCards: number;
   totalSessions: number;
   byType: Record<string, number>;
-  byStatus: Record<string, number>;
+  favoriteCount: number;
+  hiddenCount: number;
 }
 
 export interface VocabEntry {
@@ -63,9 +67,13 @@ export const api = {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";
     return fetchJSON<Card[]>(`/api/cards${qs}`);
   },
+  daily: (limit = 8) =>
+    fetchJSON<Card[]>(`/api/cards/daily?limit=${limit}`),
   stats: () => fetchJSON<Stats>("/api/cards/stats"),
   types: () => fetchJSON<string[]>("/api/cards/types"),
   lexicon: () => fetchJSON<Lexicon>("/api/lexicon"),
-  review: (cardId: number, status: string) =>
-    postJSON("/api/cards/" + cardId + "/review", { status }),
+  favorite: (cardId: number, value: boolean) =>
+    postJSON(`/api/cards/${cardId}/favorite`, { value }),
+  hide: (cardId: number, value: boolean) =>
+    postJSON(`/api/cards/${cardId}/hide`, { value }),
 };

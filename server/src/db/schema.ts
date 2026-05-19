@@ -6,6 +6,7 @@ import {
   doublePrecision,
   jsonb,
   timestamp,
+  boolean,
   unique,
 } from "drizzle-orm/pg-core";
 
@@ -39,14 +40,12 @@ export const cards = pgTable(
   (t) => [unique().on(t.sessionId, t.cardIndex)],
 );
 
-export const reviews = pgTable("reviews", {
+export const cardStates = pgTable("card_states", {
   cardId: integer("card_id")
     .primaryKey()
     .references(() => cards.id, { onDelete: "cascade" }),
-  status: text("status", {
-    enum: ["new", "learning", "learned", "skipped"],
-  })
-    .notNull()
-    .default("new"),
-  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  viewCount: integer("view_count").notNull().default(0),
+  lastViewedAt: timestamp("last_viewed_at", { withTimezone: true }),
+  hidden: boolean("hidden").notNull().default(false),
+  favorite: boolean("favorite").notNull().default(false),
 });

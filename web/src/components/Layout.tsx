@@ -2,8 +2,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { to: "/", label: "Cards" },
-  { to: "/flashcard", label: "Flash" },
+  { to: "/", label: "Daily" },
+  { to: "/browse", label: "Browse" },
   { to: "/lexicon", label: "Vocab" },
 ];
 

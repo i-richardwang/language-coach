@@ -10,3 +10,5 @@ server/.env
 server/dist/
 server/drizzle/
 web/dist/
+web/tsconfig.tsbuildinfo
+.claude/
