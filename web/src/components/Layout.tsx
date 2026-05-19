@@ -10,7 +10,7 @@ const links = [
 export default function Layout() {
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border bg-card px-6 py-4 flex items-center justify-between">
+      <header className="border-b-3 border-foreground bg-card px-6 py-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">
           <span className="bg-coral text-white px-2 py-0.5 mr-1 brutal-border brutal-shadow-sm inline-block -rotate-1">
             语言
@@ -25,10 +25,10 @@ export default function Layout() {
               end={l.to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "inline-flex items-center justify-center h-8 px-3 text-sm font-bold transition-colors",
+                  "inline-flex items-center justify-center h-8 px-3 text-sm font-bold border-2 transition-colors",
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "border-foreground bg-primary text-primary-foreground"
+                    : "border-transparent text-muted-foreground hover:border-foreground hover:text-foreground",
                 )
               }
             >

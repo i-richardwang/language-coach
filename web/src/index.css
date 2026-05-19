@@ -96,12 +96,7 @@
 
 @utility content-card {
   background: white;
-  border: 1px solid rgba(26, 26, 26, 0.08);
-  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.06);
-  transition: box-shadow 160ms ease;
-  &:hover {
-    box-shadow: 0 2px 8px rgba(26, 26, 26, 0.1);
-  }
+  border: 2px solid var(--color-ink);
 }
 
 @theme inline {
@@ -180,6 +175,17 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @layer base {

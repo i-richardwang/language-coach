@@ -87,7 +87,7 @@ export default function Card({ card, onReview, compact }: CardProps) {
 
       {/* Actions */}
       {onReview && (
-        <div className="flex gap-2 mt-4 pt-3 border-t border-border">
+        <div className="flex gap-2 mt-4 pt-3 border-t-2 border-foreground/15">
           {card.reviewStatus !== "learned" && (
             <Button
               size="sm"
@@ -111,7 +111,7 @@ export default function Card({ card, onReview, compact }: CardProps) {
           {card.reviewStatus !== "skipped" && (
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               onClick={() => onReview(card.id, "skipped")}
             >
               ✕ 跳过

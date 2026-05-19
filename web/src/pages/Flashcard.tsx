@@ -100,9 +100,9 @@ export default function Flashcard() {
           </span>
           <span>{current.type}</span>
         </div>
-        <div className="border border-border bg-card h-3 rounded-sm overflow-hidden">
+        <div className="border-2 border-foreground bg-card h-3 overflow-hidden">
           <div
-            className="h-full bg-foreground rounded-sm transition-all duration-300"
+            className="h-full bg-foreground transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -134,7 +134,7 @@ export default function Flashcard() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
               可以说
             </p>
-            <p className={`text-xl font-semibold leading-relaxed border-2 rounded-md ${accent} p-5 inline-block`}>
+            <p className={`text-xl font-semibold leading-relaxed border-2 ${accent} p-5 inline-block`}>
               "{current.aiPhrased}"
             </p>
 
@@ -177,7 +177,7 @@ export default function Flashcard() {
             ↻ 再看 <kbd className="ml-1 text-[10px] opacity-70">2</kbd>
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={() => handleReview("skipped")}
             className="flex-1 max-w-[140px]"
           >
