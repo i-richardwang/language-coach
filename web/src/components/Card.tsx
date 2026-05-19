@@ -9,6 +9,13 @@ const TYPE_STYLES: Record<string, string> = {
   "概念命名": "card-naming",
 };
 
+const TYPE_EMOJI: Record<string, string> = {
+  "复述澄清": "🔄",
+  "精准用词": "🎯",
+  "结构化表达": "🧱",
+  "概念命名": "🏷️",
+};
+
 const TYPE_ACCENT: Record<string, string> = {
   "复述澄清": "border-coral",
   "精准用词": "border-teal",
@@ -27,37 +34,37 @@ export default function Card({ card, onReview, compact }: CardProps) {
   const accent = TYPE_ACCENT[card.type] || "border-ink/20";
 
   return (
-    <article className={`content-card ${style} ${compact ? "p-4" : "p-5"}`}>
+    <article
+      className={`content-card ${style} ${compact ? "p-4" : "p-5"}`}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <Badge variant="outline" className="text-xs">
-          {card.type}
+      <div className="flex items-center justify-between mb-4">
+        <Badge variant="outline" className="font-mono text-xs uppercase tracking-wider">
+          {TYPE_EMOJI[card.type] || "📝"} {card.type}
         </Badge>
         {card.contextHint && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground font-mono">
             {card.contextHint}
           </span>
         )}
       </div>
 
       {/* User said */}
-      <div className="mb-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
+      <div className="mb-4">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
           你说
-        </p>
-        <p className="text-base leading-relaxed text-foreground/60">
+        </div>
+        <p className="text-[15px] leading-relaxed text-foreground/60">
           "{card.userSaid}"
         </p>
       </div>
 
       {/* AI phrased */}
-      <div className="mb-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
+      <div className="mb-4">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
           可以说
-        </p>
-        <p
-          className={`text-lg leading-relaxed font-semibold text-foreground pl-3 border-l-3 ${accent}`}
-        >
+        </div>
+        <p className={`text-[17px] leading-relaxed font-semibold text-foreground pl-3 border-l-3 ${accent}`}>
           "{card.aiPhrased}"
         </p>
       </div>
@@ -66,19 +73,12 @@ export default function Card({ card, onReview, compact }: CardProps) {
       {(card.vocab.length > 0 || card.pattern) && (
         <div className="flex flex-wrap gap-1.5 mb-3">
           {card.vocab.map((v) => (
-            <Badge
-              key={v}
-              variant="secondary"
-              className="bg-yellow text-foreground font-bold"
-            >
+            <Badge key={v} variant="secondary" className="bg-yellow text-foreground font-bold">
               {v}
             </Badge>
           ))}
           {card.pattern && (
-            <Badge
-              variant="secondary"
-              className="bg-lime text-foreground font-mono"
-            >
+            <Badge variant="secondary" className="bg-lime text-foreground font-mono">
               {card.pattern}
             </Badge>
           )}

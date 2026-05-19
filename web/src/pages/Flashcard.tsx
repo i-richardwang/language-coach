@@ -73,8 +73,8 @@ export default function Flashcard() {
 
   if (loading) {
     return (
-      <div className="text-center py-20 text-muted-foreground text-sm">
-        加载中...
+      <div className="text-center py-20 text-muted-foreground font-bold text-xl">
+        Loading...
       </div>
     );
   }
@@ -82,8 +82,8 @@ export default function Flashcard() {
   if (!current) {
     return (
       <div className="content-card p-12 text-center max-w-lg mx-auto">
-        <p className="text-lg font-semibold mb-2">全部看完了!</p>
-        <p className="text-muted-foreground text-sm">没有更多卡片了</p>
+        <p className="text-2xl font-bold mb-2">全部看完了!</p>
+        <p className="text-muted-foreground">没有更多卡片了</p>
       </div>
     );
   }
@@ -94,15 +94,15 @@ export default function Flashcard() {
     <div className="max-w-2xl mx-auto">
       {/* Progress */}
       <div className="mb-6">
-        <div className="flex justify-between text-xs text-muted-foreground mb-1.5 font-mono">
+        <div className="flex justify-between text-xs font-bold mb-1 font-mono">
           <span>
             {index + 1} / {total}
           </span>
           <span>{current.type}</span>
         </div>
-        <div className="border border-border bg-card h-2 rounded-full overflow-hidden">
+        <div className="border border-border bg-card h-3 rounded-sm overflow-hidden">
           <div
-            className="h-full bg-foreground rounded-full transition-all duration-300"
+            className="h-full bg-foreground rounded-sm transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -111,19 +111,19 @@ export default function Flashcard() {
       {/* Card */}
       <div
         onClick={() => !flipped && setFlipped(true)}
-        className="content-card p-8 min-h-[320px] flex flex-col justify-center cursor-pointer select-none hover:shadow-md transition-shadow"
+        className="content-card p-8 min-h-[320px] flex flex-col justify-center cursor-pointer select-none"
       >
         {/* Context hint */}
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-6 text-center">
+        <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6 text-center">
           {current.contextHint}
-        </p>
+        </div>
 
         {/* Front: userSaid */}
         <div className="text-center mb-6">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
             你说
           </p>
-          <p className="text-lg leading-relaxed text-foreground/60">
+          <p className="text-xl leading-relaxed text-foreground/60">
             "{current.userSaid}"
           </p>
         </div>
@@ -131,31 +131,22 @@ export default function Flashcard() {
         {/* Back: aiPhrased (revealed) */}
         {flipped ? (
           <div className="text-center animate-[fadeUp_200ms_ease-out]">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
               可以说
             </p>
-            <p
-              className={`text-lg font-semibold leading-relaxed border-2 rounded-lg ${accent} p-5 inline-block`}
-            >
+            <p className={`text-xl font-semibold leading-relaxed border-2 rounded-md ${accent} p-5 inline-block`}>
               "{current.aiPhrased}"
             </p>
 
             {(current.vocab.length > 0 || current.pattern) && (
               <div className="flex flex-wrap gap-1.5 justify-center mt-5">
                 {current.vocab.map((v) => (
-                  <Badge
-                    key={v}
-                    variant="secondary"
-                    className="bg-yellow text-foreground font-bold"
-                  >
+                  <Badge key={v} variant="secondary" className="bg-yellow text-foreground font-bold">
                     {v}
                   </Badge>
                 ))}
                 {current.pattern && (
-                  <Badge
-                    variant="secondary"
-                    className="bg-lime text-foreground font-mono"
-                  >
+                  <Badge variant="secondary" className="bg-lime text-foreground font-mono">
                     {current.pattern}
                   </Badge>
                 )}
@@ -196,7 +187,7 @@ export default function Flashcard() {
       )}
 
       {/* Keyboard hints */}
-      <div className="text-center mt-6 text-xs text-muted-foreground/50 font-mono">
+      <div className="text-center mt-6 text-[10px] text-muted-foreground/50 font-mono">
         ← prev · space flip · → next · 1/2/3 review
       </div>
     </div>

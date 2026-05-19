@@ -3,7 +3,6 @@ import { api, type Card as CardType, type Stats } from "@/api";
 import Card from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -53,27 +52,30 @@ export default function CardBrowser() {
 
   return (
     <div>
-      {/* Stats */}
+      {/* Stats bar */}
       {stats && (
-        <div className="flex items-center gap-3 mb-4 flex-wrap text-sm">
-          <span className="font-semibold">
-            {stats.totalCards}
-            <span className="text-muted-foreground font-normal ml-1">张卡片</span>
-          </span>
-          <span className="text-border">·</span>
-          <span className="font-semibold">
-            {stats.totalSessions}
-            <span className="text-muted-foreground font-normal ml-1">个会话</span>
-          </span>
+        <div className="flex flex-wrap gap-3 mb-6">
+          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
+            <span className="text-3xl font-bold">{stats.totalCards}</span>
+            <span className="text-xs text-muted-foreground">cards</span>
+          </div>
+          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
+            <span className="text-3xl font-bold">{stats.totalSessions}</span>
+            <span className="text-xs text-muted-foreground">sessions</span>
+          </div>
           {Object.entries(stats.byType).map(([t, n]) => (
-            <Badge key={t} variant="outline" className="font-normal">
-              {n} {t}
-            </Badge>
+            <div
+              key={t}
+              className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm"
+            >
+              <span className="font-bold">{n}</span>
+              <span className="text-muted-foreground">{t}</span>
+            </div>
           ))}
         </div>
       )}
 
-      {/* Filter bar — single row, no labels, all controls same height */}
+      {/* Filter bar — flat row, all controls aligned at h-8 */}
       <form
         onSubmit={handleSearch}
         className="flex items-center gap-3 mb-6 flex-wrap"
@@ -128,18 +130,20 @@ export default function CardBrowser() {
             placeholder="搜索词汇或表达..."
             className="w-[220px]"
           />
-          <Button type="submit">搜索</Button>
+          <Button type="submit" variant="default" className="shrink-0">
+            Go
+          </Button>
         </div>
       </form>
 
       {/* Card grid */}
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">
-          加载中...
+        <div className="text-center py-12 text-muted-foreground font-bold text-xl">
+          Loading...
         </div>
       ) : cards.length === 0 ? (
         <div className="content-card p-12 text-center">
-          <p className="text-lg font-semibold mb-2">没有卡片</p>
+          <p className="text-xl font-bold mb-2">没有卡片</p>
           <p className="text-muted-foreground text-sm">
             运行 extract → analyze → push 来生成卡片
           </p>
