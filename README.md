@@ -1,103 +1,107 @@
-# rephrased
+# Rephrased
 
-捕捉 AI 把你的话用更精准的方式重新表达的瞬间，做成可复习的卡片。
+Capture the moments when AI rephrases your fuzzy thoughts more precisely — and turn them into reviewable cards.
 
-## 思路
+## What it does
 
-和 AI 对话时有一种常见时刻：你心里有一个想法，但表达得模糊或不到位；AI 理解了你的意思，用更精准的话把同一个想法说了出来。读到时的感觉是「原来可以这样说」而不是「原来是这样」——前者是表达提升，后者是知识获取。本项目只抓前者。
+When talking to AI, there's a recurring moment: you have an idea but express it vaguely; the AI understands your intent and says the same thing with sharper language. The feeling is "oh, *that's* how you say it" — not "oh, I didn't know that." The first is an expression upgrade; the second is knowledge acquisition. This tool captures the first kind only.
 
-## 架构
+## Architecture
 
 ```
-[本地 Mac (× N 台)]                            [server (e.g. Zeabur)]
+[Local Mac (× N)]                              [Server (e.g. Zeabur)]
 ~/.claude/projects/*.jsonl
-    │ rp  (单文件 Python，零依赖)
+    │ rp  (single-file Python CLI, zero deps)
     │     POST /api/transcripts, Bearer auth
-    └────────────────────────────────────────► transcripts 表 (status=pending)
+    └────────────────────────────────────────► transcripts table (status=pending)
                                                       │
                                                       ▼
                                               in-process worker
-                                                      │ Vercel AI SDK + OpenAI 兼容 endpoint
+                                                      │ Vercel AI SDK + OpenAI-compatible endpoint
                                                       ▼
-                                              cards 表 (status=done)
+                                              cards table (status=done)
                                                       ▲
-              浏览器 ◄── GET /api/cards, /api/transcripts ──┘
+             Browser ◄── GET /api/cards, /api/transcripts ──┘
 ```
 
-**本地只做"读取 + 上传"；分析在 server 完成，用户机器上不需要任何 LLM 工具链。**
+All analysis happens on the server. Your local machine only reads and uploads transcripts — no LLM toolchain required locally.
 
-## 用法
+## Quick start
 
-### 本地（每台 Mac 一次）
+### Local setup (once per Mac)
 
 ```bash
-# 1. 安装 CLI（单文件，零依赖）
-curl -fsSL https://raw.githubusercontent.com/<user>/rephrased/master/cli/rp \
+# 1. Install the CLI (single file, zero dependencies)
+curl -fsSL https://raw.githubusercontent.com/i-richardwang/rephrased/master/cli/rp \
   -o ~/.local/bin/rp && chmod +x ~/.local/bin/rp
 
-# 2. 写配置
-rp --init                                       # 生成 ~/.config/rp/config.json 模板
-# 编辑该文件，填入 server URL 和 API_TOKEN
+# 2. Create config
+rp --init                  # generates ~/.config/rp/config.json template
+# Edit the file — fill in your server URL and API_TOKEN
 
-# 3. 日常使用
-rp                # 增量扫描 ~/.claude/projects/ 并上传
-rp --since 7d     # 只看近 7 天
-rp --dry-run      # 预览
-rp --force        # 全量重推
-rp --status       # 查 server 上的处理状态
+# 3. Daily use
+rp                         # incremental scan & upload
+rp --since 7d              # only sessions from last 7 days
+rp --dry-run               # preview without uploading
+rp --force                 # re-push everything
+rp --status                # check server-side processing status
 ```
 
-状态分离：`~/.config/rp/config.json`（多设备共享）+ `~/.local/state/rp/state.json`（每台机独立的增量游标）。
+Config and state are separated: `~/.config/rp/config.json` (shareable across devices) + `~/.local/state/rp/state.json` (per-machine incremental cursor).
 
-### Server 部署
+### Server deployment
 
-环境变量：
+Environment variables:
 
-| 变量 | 用途 |
+| Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | PostgreSQL 连接串 |
-| `API_TOKEN` | `rp` 上传用的 bearer token |
-| `LLM_BASE_URL` | OpenAI 兼容 endpoint，如 `https://api.xxx.com/v1` |
-| `LLM_API_KEY` | 对应的 key |
-| `LLM_MODEL_ID` | 模型 id |
-| `LLM_PROVIDER_NAME` | 可选，日志/调试用 |
-| `LLM_CONCURRENCY` | 可选，并发分析数(默认 2) |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `API_TOKEN` | Bearer token for `rp` uploads |
+| `LLM_BASE_URL` | OpenAI-compatible endpoint, e.g. `https://api.xxx.com/v1` |
+| `LLM_API_KEY` | API key for the LLM endpoint |
+| `LLM_MODEL_ID` | Model ID |
+| `LLM_PROVIDER_NAME` | Optional, for logging/debugging |
+| `LLM_CONCURRENCY` | Optional, concurrent analysis workers (default: 2) |
 
-第一次部署跑迁移：
+Run migrations on first deploy:
 
 ```bash
 cd server
 DATABASE_URL=... npx tsx migrations/run.ts 002_transcripts.sql
 ```
 
-## 设计要点
+## Design decisions
 
-- **粒度**：一个 session 处理一次，模型看完整对话再挑卡片
-- **增量**：transcripts 表里 `transcript_mtime` 没变就跳过重分析
-- **判断标准**：这个想法在 AI 开口之前是不是已经在用户脑子里了？是→记录，不是→不记录
-- **常见形态**：复述澄清 / 精准用词 / 结构化表达 / 概念命名（不限于此）
-- **允许 0 卡片**：多数 session 没学习价值，不强求产出
-- **单 session 上限 5 张**
+- **Granularity**: one session = one analysis pass; the model sees the full conversation before picking cards
+- **Incremental**: if a transcript's `transcript_mtime` hasn't changed, re-analysis is skipped
+- **Selection criteria**: was this idea already in the user's head before the AI spoke? Yes → record. No → skip.
+- **Common types**: Paraphrase / Precise Wording / Structured Expression / Concept Naming (not exhaustive)
+- **Zero cards is fine**: most sessions have no learning value — no forced output
+- **Max 5 cards per session**
 
-## 目录
+## Project structure
 
-- `cli/rp` — 本地端单文件 CLI（Python stdlib only）
-- `server/` — Hono + Drizzle + PostgreSQL，含分析 worker 和 LLM 调用
-- `server/prompts/analyze.md` — 分析提示词
-- `web/` — React 前端
+- `cli/rp` — Local single-file CLI (Python stdlib only)
+- `server/` — Hono + Drizzle + PostgreSQL, with analysis worker and LLM calls
+- `server/prompts/analyze.md` — Analysis prompt
+- `web/` — React frontend
 
-## 卡片字段
+## Card schema
 
 ```json
 {
-  "type": "复述澄清",
-  "user_said": "用户原话（保留模糊感）",
-  "ai_phrased": "AI 对同一件事的精准说法",
+  "type": "Paraphrase",
+  "user_said": "What the user originally said (preserving the vagueness)",
+  "ai_phrased": "How the AI expressed the same idea more precisely",
   "takeaway": {
-    "vocab": ["关键词1", "关键词2"],
-    "pattern": "可迁移的句式（可空）"
+    "vocab": ["key_term_1", "key_term_2"],
+    "pattern": "A reusable sentence pattern (can be empty)"
   },
-  "context_hint": "回忆场景",
-  "source_ref": {"user_line": 12, "ai_line": 14}
+  "context_hint": "Scene for recall",
+  "source_ref": { "user_line": 12, "ai_line": 14 }
 }
 ```
+
+## License
+
+MIT

@@ -10,26 +10,26 @@ const PROMPT_PATH = resolve(__dirname, "../../prompts/analyze.md");
 const SYSTEM_PROMPT = readFileSync(PROMPT_PATH, "utf8");
 
 const CardSchema = z.object({
-  type: z.string().describe("卡片类型，中文"),
-  user_said: z.string().describe("用户原话，保留模糊感，≤80字"),
-  ai_phrased: z.string().describe("AI 的精准说法，≤80字"),
+  type: z.string().describe("Card type, e.g. Paraphrase / Precise Wording"),
+  user_said: z.string().describe("User's original words, keep the vagueness, ≤80 chars"),
+  ai_phrased: z.string().describe("AI's precise rephrasing, ≤80 chars"),
   takeaway: z
     .object({
-      vocab: z.array(z.string()).describe("可复用词数组，可空"),
-      pattern: z.string().describe("可迁移句式，一句话；无则空字符串"),
+      vocab: z.array(z.string()).describe("Reusable terms array, can be empty"),
+      pattern: z.string().describe("Transferable sentence pattern; empty string if none"),
     })
-    .describe("迁移价值"),
-  context_hint: z.string().describe("回忆场景，≤20字"),
+    .describe("Transferable takeaway"),
+  context_hint: z.string().describe("Scene for recall, ≤20 chars"),
   source_ref: z
     .object({
-      user_line: z.number().int().nullable().describe("用户行号或 null"),
-      ai_line: z.number().int().nullable().describe("AI 行号或 null"),
+      user_line: z.number().int().nullable().describe("User line number or null"),
+      ai_line: z.number().int().nullable().describe("AI line number or null"),
     })
-    .describe("源对话脚本中的行号"),
+    .describe("Line numbers in the source transcript"),
 });
 
 const CardsSchema = z.object({
-  cards: z.array(CardSchema).max(5).describe("0-5 张卡片"),
+  cards: z.array(CardSchema).max(5).describe("0–5 cards"),
 });
 
 export type ExtractedCard = z.infer<typeof CardSchema>;

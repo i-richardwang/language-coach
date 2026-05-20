@@ -3,24 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const TYPE_STYLES: Record<string, string> = {
-  "复述澄清": "card-paraphrase",
-  "精准用词": "card-wording",
-  "结构化表达": "card-structure",
-  "概念命名": "card-naming",
+  "Paraphrase": "card-paraphrase",
+  "Precise Wording": "card-wording",
+  "Structured Expression": "card-structure",
+  "Concept Naming": "card-naming",
 };
 
 const TYPE_EMOJI: Record<string, string> = {
-  "复述澄清": "🔄",
-  "精准用词": "🎯",
-  "结构化表达": "🧱",
-  "概念命名": "🏷️",
+  "Paraphrase": "🔄",
+  "Precise Wording": "🎯",
+  "Structured Expression": "🧱",
+  "Concept Naming": "🏷️",
 };
 
 const TYPE_ACCENT: Record<string, string> = {
-  "复述澄清": "border-coral",
-  "精准用词": "border-teal",
-  "结构化表达": "border-yellow",
-  "概念命名": "border-purple",
+  "Paraphrase": "border-coral",
+  "Precise Wording": "border-teal",
+  "Structured Expression": "border-yellow",
+  "Concept Naming": "border-purple",
 };
 
 interface CardProps {
@@ -46,7 +46,7 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
         </Badge>
         <div className="flex items-center gap-2">
           {card.favorite && (
-            <span className="text-xs font-mono text-coral" title="已收藏">
+            <span className="text-xs font-mono text-coral" title="Favorited">
               ★
             </span>
           )}
@@ -61,7 +61,7 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
       {/* User said */}
       <div className="mb-4">
         <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-          你说
+          You said
         </div>
         <p className="text-[15px] leading-relaxed text-foreground/60">
           "{card.userSaid}"
@@ -71,7 +71,7 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
       {/* AI phrased */}
       <div className="mb-4">
         <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-          可以说
+          Better put
         </div>
         <p className={`text-[17px] leading-relaxed font-semibold text-foreground pl-3 border-l-3 ${accent}`}>
           "{card.aiPhrased}"
@@ -104,7 +104,7 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
               className={card.favorite ? "bg-coral text-white" : ""}
               onClick={() => onFavorite(card.id, !card.favorite)}
             >
-              {card.favorite ? "★ 已收藏" : "☆ 收藏"}
+              {card.favorite ? "★ Favorited" : "☆ Favorite"}
             </Button>
           )}
           {onHide && (
@@ -114,12 +114,12 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
               className={card.hidden ? "bg-foreground text-background" : ""}
               onClick={() => onHide(card.id, !card.hidden)}
             >
-              {card.hidden ? "🙈 已隐藏" : "🙈 隐藏"}
+              {card.hidden ? "🙈 Hidden" : "🙈 Hide"}
             </Button>
           )}
           {card.viewCount > 0 && (
             <span className="ml-auto text-[10px] font-mono text-muted-foreground">
-              看过 {card.viewCount} 次
+              viewed {card.viewCount}×
             </span>
           )}
         </div>

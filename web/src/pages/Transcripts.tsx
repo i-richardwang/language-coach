@@ -10,16 +10,16 @@ const STATUS_STYLES: Record<TranscriptRow["status"], string> = {
 };
 
 const STATUS_LABEL: Record<TranscriptRow["status"], string> = {
-  pending: "排队中",
-  analyzing: "分析中",
-  done: "已完成",
-  failed: "失败",
+  pending: "Pending",
+  analyzing: "Analyzing",
+  done: "Done",
+  failed: "Failed",
 };
 
 function formatTime(iso: string | null): string {
   if (!iso) return "—";
   const d = new Date(iso);
-  return d.toLocaleString("zh-CN", { hour12: false });
+  return d.toLocaleString("en-US", { hour12: false });
 }
 
 export default function Transcripts() {
@@ -72,7 +72,7 @@ export default function Transcripts() {
           <span className="font-bold">
             {data.queue.inflight}/{data.queue.size + data.queue.pending}
           </span>
-          <span className="text-muted-foreground">queue 运行/总数</span>
+          <span className="text-muted-foreground">queue active/total</span>
         </div>
       </div>
 
@@ -113,7 +113,7 @@ export default function Transcripts() {
         ))}
         {data.transcripts.length === 0 && (
           <div className="text-muted-foreground text-center py-12">
-            还没有 transcript。在本地运行 <code>rp</code> 上传。
+            No transcripts yet. Run <code>rp</code> locally to upload.
           </div>
         )}
       </div>

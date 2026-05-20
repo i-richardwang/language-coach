@@ -1,53 +1,53 @@
-# 从对话中提取语言学习卡片
+# Extract language-learning cards from a conversation
 
-阅读用户与 AI 的对话脚本。你的任务是找到这样的时刻：
+Read a transcript of a user talking with an AI. Your task is to find moments like this:
 
-**用户心里有一个想法，但表达得模糊或不到位。AI 理解了他的意思，用更精准的话把同一个想法说了出来。**
+**The user had an idea in mind but expressed it vaguely or imprecisely. The AI understood the intent and restated the same idea with sharper, more precise language.**
 
-举例——
+Example — record this:
 
-> 用户说：「有的"你说"和"可以说"根本就对不上。你知道我说的问题吗」
-> AI 说：「不是对同一件事的两种表达，而是一问一答、或者一个说现象另一个说方案。」
+> User: "Some of the 'you said' and 'could say' parts just don't line up. You know what I mean?"
+> AI: "They aren't two ways of saying the same thing — they're a question and an answer, or one describes the problem while the other describes the fix."
 
-为什么这值得记录：用户已经看到了问题——他知道"对不上"——但说不清楚到底怎么对不上。AI 没有带来新信息，只是把用户已经感知到的东西讲清楚了。用户读到会想：「对，我想说的就是这个意思，原来可以这样说。」
+Why this is worth recording: the user already saw the problem — they knew something "didn't line up" — but couldn't articulate *how*. The AI didn't bring new information; it just said clearly what the user already sensed. The user's reaction would be "yes, *that's* what I meant — now I know how to say it."
 
-反例——
+Counter-example — don't record this:
 
-> 用户说：「三个数据库怎么配合的？」
-> AI 说：「SQLite 是仓库，Kuzu 是索引卡片，LanceDB 是凭感觉找的能力。」
+> User: "How do the three databases work together?"
+> AI: "SQLite is the warehouse, Kuzu is the index card system, LanceDB is the find-by-feel capability."
 
-为什么这不记录：用户不知道三个库各自干什么——他在提问。AI 的回答带来了用户脑子里没有的知识。比喻再生动，也是在教新东西，不是在替用户把话说清楚。用户读到的感觉是「原来是这样」，不是「原来可以这样说」。
+Why not: the user didn't know what the three databases did — they were asking. The AI's answer brings knowledge the user didn't have. However vivid the metaphor, it's teaching something new, not helping the user say what they already think. The reaction would be "oh, I see" rather than "oh, that's how you say it."
 
-**判断只需要回答一个问题：这个想法，在 AI 开口之前，是不是已经在用户脑子里了？**
+**The only question to ask: was this idea already in the user's head before the AI spoke?**
 
-- 是 → 用户只是说不好 → 记录
-- 不是 → AI 在传递新认知 → 不记录
+- Yes → the user just couldn't express it well → record
+- No → the AI conveyed new knowledge → don't record
 
-## 常见形态
+## Common types
 
-不限于此——如果发现其他有学习价值的表达对照，自行命名 type：
+Not exhaustive — if you find other expression-upgrade patterns worth capturing, name the type yourself:
 
-- **复述澄清** — 用户表达含糊，AI 用一句更精准的话重述了用户的意思
-- **精准用词** — AI 用了一个用户不会用但更贴切的词或短语
-- **结构化表达** — 用户提出零散想法，AI 整理成清晰的并列、递进或对照结构
-- **概念命名** — 用户用一长串描述指代一个事物，AI 给出了准确名称
+- **Paraphrase** — user expressed something vaguely; AI restated it in one more precise sentence
+- **Precise Wording** — AI used a word or phrase the user wouldn't have reached for but that fits better
+- **Structured Expression** — user threw out scattered thoughts; AI organized them into a clear parallel, progressive, or contrastive structure
+- **Concept Naming** — user described something in a long-winded way; AI gave it its proper name
 
-## 产出约束
+## Output constraints
 
-- 宁少不多。一个 session 输出 0 张卡片完全合理，**最多 5 张**。
-- 每张卡片独立成立，不依赖前后文也能让用户学到东西。
-- `takeaway` 要可迁移——vocab 是能在其他场合复用的词，pattern 是能套用到其他主题的句式。
-- 用户读到 `ai_phrased` 时应该有「原来可以这样说」的感觉，而不是「原来是这样」的感觉。前者是表达提升，后者是知识获取。
+- Less is more. Zero cards for a session is perfectly fine. **Maximum 5 cards.**
+- Each card must stand alone — useful even without surrounding context.
+- `takeaway` should be transferable: vocab items should be reusable in other contexts; patterns should apply to other topics.
+- When reading `ai_phrased`, the user should feel "oh, *that's* how you say it" — not "oh, I didn't know that." The first is an expression upgrade; the second is knowledge acquisition.
 
-## 字段说明
+## Field descriptions
 
-- `type`: 卡片类型（中文，如"复述澄清"/"精准用词"等，可自定义）
-- `user_said`: 用户原话（保留模糊感，≤80字）
-- `ai_phrased`: AI 对同一件事的精准说法（≤80字）
-- `takeaway.vocab`: 能在其他场合复用的词数组（可空）
-- `takeaway.pattern`: 能套用到其他主题的句式抽象（一句话，可空字符串）
-- `context_hint`: 回忆场景（≤20字）
-- `source_ref.user_line`: 对话脚本里 `(L<行号>)` 的用户行号；找不到填 null
-- `source_ref.ai_line`: 对话脚本里 `(L<行号>)` 的 AI 行号；找不到填 null
+- `type`: card type (e.g. "Paraphrase", "Precise Wording", etc. — you may define new ones)
+- `user_said`: the user's original words (keep the vagueness, ≤80 chars)
+- `ai_phrased`: AI's precise version of the same idea (≤80 chars)
+- `takeaway.vocab`: array of reusable terms (can be empty)
+- `takeaway.pattern`: a transferable sentence pattern abstraction (one sentence; empty string if none)
+- `context_hint`: scene for recall (≤20 chars)
+- `source_ref.user_line`: line number `(L<n>)` of the user turn in the transcript; null if not found
+- `source_ref.ai_line`: line number `(L<n>)` of the AI turn in the transcript; null if not found
 
-没有值得记录的对话时，返回 `{"cards": []}`。
+When there's nothing worth recording, return `{"cards": []}`.

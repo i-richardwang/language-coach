@@ -14,9 +14,9 @@ import {
 type View = "all" | "favorites" | "hidden";
 
 const VIEWS: { key: View; label: string }[] = [
-  { key: "all", label: "全部" },
-  { key: "favorites", label: "收藏" },
-  { key: "hidden", label: "已隐藏" },
+  { key: "all", label: "All" },
+  { key: "favorites", label: "Favorites" },
+  { key: "hidden", label: "Hidden" },
 ];
 
 export default function CardBrowser() {
@@ -62,10 +62,8 @@ export default function CardBrowser() {
   const handleHide = async (id: number, value: boolean) => {
     await api.hide(id, value);
     if (view === "all" && value) {
-      // hidden cards leave the "all" view
       setCards((prev) => prev.filter((c) => c.id !== id));
     } else if (view === "hidden" && !value) {
-      // unhidden cards leave the "hidden" view
       setCards((prev) => prev.filter((c) => c.id !== id));
     } else {
       setCards((prev) =>
@@ -89,11 +87,11 @@ export default function CardBrowser() {
           </div>
           <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
             <span className="font-bold">{stats.favoriteCount}</span>
-            <span className="text-muted-foreground">★ 收藏</span>
+            <span className="text-muted-foreground">★ favorites</span>
           </div>
           <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
             <span className="font-bold">{stats.hiddenCount}</span>
-            <span className="text-muted-foreground">🙈 隐藏</span>
+            <span className="text-muted-foreground">🙈 hidden</span>
           </div>
           {Object.entries(stats.byType).map(([t, n]) => (
             <div
@@ -129,10 +127,10 @@ export default function CardBrowser() {
           }
         >
           <SelectTrigger className="w-[130px]">
-            <SelectValue placeholder="全部类型" />
+            <SelectValue placeholder="All types" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__all__">全部类型</SelectItem>
+            <SelectItem value="__all__">All types</SelectItem>
             {types.map((t) => (
               <SelectItem key={t} value={t}>
                 {t}
@@ -148,7 +146,7 @@ export default function CardBrowser() {
             type="text"
             value={filter.q}
             onChange={(e) => setFilter((f) => ({ ...f, q: e.target.value }))}
-            placeholder="搜索词汇或表达..."
+            placeholder="Search vocab or phrases..."
             className="w-[220px]"
           />
           <Button type="submit" variant="default" className="shrink-0">
@@ -166,15 +164,15 @@ export default function CardBrowser() {
         <div className="content-card p-12 text-center">
           <p className="text-xl font-bold mb-2">
             {view === "favorites"
-              ? "还没有收藏的卡片"
+              ? "No favorited cards yet"
               : view === "hidden"
-                ? "没有已隐藏的卡片"
-                : "没有卡片"}
+                ? "No hidden cards"
+                : "No cards"}
           </p>
           <p className="text-muted-foreground text-sm">
             {view === "all"
-              ? "运行 extract → analyze → push 来生成卡片"
-              : "点击卡片上的按钮可以管理收藏和隐藏"}
+              ? "Run rp to upload transcripts and generate cards"
+              : "Use the buttons on cards to manage favorites and hidden items"}
           </p>
         </div>
       ) : (

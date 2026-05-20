@@ -30,18 +30,18 @@ export default function Lexicon() {
             size="sm"
             onClick={() => setTab("vocab")}
           >
-            词汇 ({data.vocab.length})
+            Vocab ({data.vocab.length})
           </Button>
           <Button
             variant={tab === "patterns" ? "default" : "outline"}
             size="sm"
             onClick={() => setTab("patterns")}
           >
-            句式 ({data.patterns.length})
+            Patterns ({data.patterns.length})
           </Button>
         </div>
         <Badge variant="outline" className="text-sm px-3 py-1">
-          共 <span className="font-bold">{data.cardTotal}</span> 张卡片
+          <span className="font-bold">{data.cardTotal}</span>&nbsp;cards total
         </Badge>
       </div>
 
@@ -70,7 +70,7 @@ export default function Lexicon() {
               {expanded === v.word && v.examples.length > 0 && (
                 <div className="px-5 pb-4 pt-1">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                    例句
+                    Examples
                   </p>
                   {v.examples.map((ex, i) => (
                     <p
@@ -87,7 +87,7 @@ export default function Lexicon() {
 
           {data.vocab.length === 0 && (
             <div className="p-8 text-center text-muted-foreground">
-              暂无词汇数据
+              No vocab data yet
             </div>
           )}
         </div>
@@ -117,7 +117,7 @@ export default function Lexicon() {
 
           {data.patterns.length === 0 && (
             <div className="p-8 text-center text-muted-foreground">
-              暂无句式数据
+              No pattern data yet
             </div>
           )}
         </div>

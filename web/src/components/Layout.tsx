@@ -14,9 +14,9 @@ export default function Layout() {
       <header className="border-b-3 border-foreground bg-card px-6 py-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">
           <span className="bg-coral text-white px-2 py-0.5 mr-1 brutal-border brutal-shadow-sm inline-block -rotate-1">
-            语言
+            Re
           </span>
-          Coach
+          phrased
         </h1>
         <nav className="flex gap-1">
           {links.map((l) => (

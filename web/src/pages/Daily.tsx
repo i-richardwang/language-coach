@@ -30,7 +30,6 @@ export default function Daily() {
   const handleHide = async (id: number, value: boolean) => {
     await api.hide(id, value);
     if (value) {
-      // hidden cards leave today's stream
       setCards((prev) => prev.filter((c) => c.id !== id));
     } else {
       setCards((prev) =>
@@ -44,17 +43,17 @@ export default function Daily() {
       {/* Header */}
       <div className="flex items-end justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">今日翻阅</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Daily Review</h2>
           <p className="text-sm text-muted-foreground mt-1 font-mono">
             {loading
               ? "loading..."
               : cards.length === 0
-                ? "暂无卡片"
-                : `${cards.length} 张 · 优先展示很久没看过的`}
+                ? "No cards available"
+                : `${cards.length} cards · least recently viewed first`}
           </p>
         </div>
         <Button variant="outline" onClick={load} disabled={loading}>
-          🎲 再抽一组
+          🎲 Shuffle
         </Button>
       </div>
 
@@ -65,9 +64,9 @@ export default function Daily() {
         </div>
       ) : cards.length === 0 ? (
         <div className="content-card p-12 text-center">
-          <p className="text-xl font-bold mb-2">没有卡片可看</p>
+          <p className="text-xl font-bold mb-2">Nothing to review</p>
           <p className="text-muted-foreground text-sm">
-            运行 extract → analyze → push 来生成卡片，或解除一些已隐藏的卡片
+            Run rp to upload transcripts and generate cards, or unhide some hidden cards
           </p>
         </div>
       ) : (
