@@ -51,8 +51,8 @@ export default function Transcripts() {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3 mb-6">
-        <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
+      <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 sm:gap-3 mb-6">
+        <div className="col-span-3 sm:col-span-1 brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
           <span className="text-3xl font-bold">{data.transcripts.length}</span>
           <span className="text-xs text-muted-foreground">transcripts</span>
         </div>
@@ -68,7 +68,7 @@ export default function Transcripts() {
             <span>{STATUS_LABEL[s]}</span>
           </div>
         ))}
-        <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
+        <div className="col-span-2 sm:col-span-1 brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
           <span className="font-bold">
             {data.queue.inflight}/{data.queue.size + data.queue.pending}
           </span>
@@ -103,7 +103,7 @@ export default function Transcripts() {
             </div>
             <span
               className={cn(
-                "brutal-border px-3 py-1 text-sm font-bold whitespace-nowrap",
+                "brutal-border px-3 py-1 text-sm font-bold whitespace-nowrap self-start md:self-auto",
                 STATUS_STYLES[t.status],
               )}
             >

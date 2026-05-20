@@ -62,7 +62,7 @@ export default function Lexicon() {
                   </Badge>
                   <span className="font-semibold text-lg">{v.word}</span>
                 </div>
-                <span className="text-xs text-muted-foreground font-mono">
+                <span className="text-xs text-muted-foreground font-mono shrink-0 ml-2">
                   {v.sessions.length} session(s)
                 </span>
               </button>

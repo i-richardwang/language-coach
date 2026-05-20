@@ -1,6 +1,16 @@
 import type { Card as CardType } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  RefreshCw,
+  Crosshair,
+  LayoutList,
+  Tag,
+  FileText,
+  Star,
+  EyeOff,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 const TYPE_STYLES: Record<string, string> = {
   "Paraphrase": "card-paraphrase",
@@ -9,11 +19,11 @@ const TYPE_STYLES: Record<string, string> = {
   "Concept Naming": "card-naming",
 };
 
-const TYPE_EMOJI: Record<string, string> = {
-  "Paraphrase": "🔄",
-  "Precise Wording": "🎯",
-  "Structured Expression": "🧱",
-  "Concept Naming": "🏷️",
+const TYPE_ICON: Record<string, LucideIcon> = {
+  "Paraphrase": RefreshCw,
+  "Precise Wording": Crosshair,
+  "Structured Expression": LayoutList,
+  "Concept Naming": Tag,
 };
 
 const TYPE_ACCENT: Record<string, string> = {
@@ -34,6 +44,7 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
   const style = TYPE_STYLES[card.type] || "";
   const accent = TYPE_ACCENT[card.type] || "border-ink/20";
   const showActions = onFavorite || onHide;
+  const Icon = TYPE_ICON[card.type] || FileText;
 
   return (
     <article
@@ -41,14 +52,12 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <Badge variant="outline" className="font-mono text-xs uppercase tracking-wider">
-          {TYPE_EMOJI[card.type] || "📝"} {card.type}
+        <Badge variant="outline" className="font-mono text-xs uppercase tracking-wider gap-1.5">
+          <Icon size={12} /> {card.type}
         </Badge>
         <div className="flex items-center gap-2">
           {card.favorite && (
-            <span className="text-xs font-mono text-coral" title="Favorited">
-              ★
-            </span>
+            <Star size={12} className="text-coral fill-coral" />
           )}
           {card.contextHint && (
             <span className="text-xs text-muted-foreground font-mono">
@@ -73,23 +82,27 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
         <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
           Better put
         </div>
-        <p className={`text-[17px] leading-relaxed font-semibold text-foreground pl-3 border-l-3 ${accent}`}>
+        <p className={`text-[17px] leading-relaxed font-semibold text-foreground pl-3 border-l-3 max-w-prose ${accent}`}>
           "{card.aiPhrased}"
         </p>
       </div>
 
       {/* Takeaway */}
       {(card.vocab.length > 0 || card.pattern) && (
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {card.vocab.map((v) => (
-            <Badge key={v} variant="secondary" className="bg-yellow text-foreground font-bold">
-              {v}
-            </Badge>
-          ))}
+        <div className="mb-3 space-y-1.5">
+          {card.vocab.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {card.vocab.map((v) => (
+                <Badge key={v} variant="secondary" className="bg-yellow text-foreground font-bold">
+                  {v}
+                </Badge>
+              ))}
+            </div>
+          )}
           {card.pattern && (
-            <Badge variant="secondary" className="bg-lime text-foreground font-mono">
+            <div className="bg-lime text-foreground font-mono text-xs px-2.5 py-1 brutal-border break-words">
               {card.pattern}
-            </Badge>
+            </div>
           )}
         </div>
       )}
@@ -104,7 +117,8 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
               className={card.favorite ? "bg-coral text-white" : ""}
               onClick={() => onFavorite(card.id, !card.favorite)}
             >
-              {card.favorite ? "★ Favorited" : "☆ Favorite"}
+              <Star size={14} className={card.favorite ? "fill-current" : ""} />
+              {card.favorite ? "Favorited" : "Favorite"}
             </Button>
           )}
           {onHide && (
@@ -114,7 +128,8 @@ export default function Card({ card, onFavorite, onHide, compact }: CardProps) {
               className={card.hidden ? "bg-foreground text-background" : ""}
               onClick={() => onHide(card.id, !card.hidden)}
             >
-              {card.hidden ? "🙈 Hidden" : "🙈 Hide"}
+              <EyeOff size={14} />
+              {card.hidden ? "Hidden" : "Hide"}
             </Button>
           )}
           {card.viewCount > 0 && (

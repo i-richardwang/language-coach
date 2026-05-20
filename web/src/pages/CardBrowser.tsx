@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Star, EyeOff } from "lucide-react";
 
 type View = "all" | "favorites" | "hidden";
 
@@ -76,70 +77,94 @@ export default function CardBrowser() {
     <div>
       {/* Stats bar */}
       {stats && (
-        <div className="flex flex-wrap gap-3 mb-6">
-          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
-            <span className="text-3xl font-bold">{stats.totalCards}</span>
-            <span className="text-xs text-muted-foreground">cards</span>
-          </div>
-          <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
-            <span className="text-3xl font-bold">{stats.totalSessions}</span>
-            <span className="text-xs text-muted-foreground">sessions</span>
-          </div>
-          <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
-            <span className="font-bold">{stats.favoriteCount}</span>
-            <span className="text-muted-foreground">★ favorites</span>
-          </div>
-          <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
-            <span className="font-bold">{stats.hiddenCount}</span>
-            <span className="text-muted-foreground">🙈 hidden</span>
-          </div>
-          {Object.entries(stats.byType).map(([t, n]) => (
-            <div
-              key={t}
-              className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm"
-            >
-              <span className="font-bold">{n}</span>
-              <span className="text-muted-foreground">{t}</span>
+        <div className="mb-6">
+          {/* Mobile: compact summary */}
+          <div className="flex sm:hidden gap-2 flex-wrap">
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-1.5 flex items-baseline gap-1 text-sm">
+              <span className="text-xl font-bold">{stats.totalCards}</span>
+              <span className="text-xs text-muted-foreground">cards</span>
             </div>
-          ))}
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-1.5 flex items-baseline gap-1 text-sm">
+              <span className="text-xl font-bold">{stats.totalSessions}</span>
+              <span className="text-xs text-muted-foreground">sessions</span>
+            </div>
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-1.5 flex items-baseline gap-1 text-sm">
+              <span className="font-bold">{stats.favoriteCount}</span>
+              <Star size={12} className="text-muted-foreground" />
+            </div>
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-1.5 flex items-baseline gap-1 text-sm">
+              <span className="font-bold">{stats.hiddenCount}</span>
+              <EyeOff size={12} className="text-muted-foreground" />
+            </div>
+          </div>
+          {/* Desktop: full stats */}
+          <div className="hidden sm:flex flex-wrap gap-3">
+            <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
+              <span className="text-3xl font-bold">{stats.totalCards}</span>
+              <span className="text-xs text-muted-foreground">cards</span>
+            </div>
+            <div className="brutal-border brutal-shadow-sm bg-white px-4 py-2 flex items-baseline gap-1">
+              <span className="text-3xl font-bold">{stats.totalSessions}</span>
+              <span className="text-xs text-muted-foreground">sessions</span>
+            </div>
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
+              <span className="font-bold">{stats.favoriteCount}</span>
+              <span className="text-muted-foreground flex items-center gap-1"><Star size={12} /> favorites</span>
+            </div>
+            <div className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm">
+              <span className="font-bold">{stats.hiddenCount}</span>
+              <span className="text-muted-foreground flex items-center gap-1"><EyeOff size={12} /> hidden</span>
+            </div>
+            {Object.entries(stats.byType).map(([t, n]) => (
+              <div
+                key={t}
+                className="brutal-border brutal-shadow-sm bg-white px-3 py-2 flex items-baseline gap-1 text-sm"
+              >
+                <span className="font-bold">{n}</span>
+                <span className="text-muted-foreground">{t}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* View tabs + filters */}
-      <div className="flex items-center gap-3 mb-6 flex-wrap">
-        <div className="flex gap-1">
-          {VIEWS.map((v) => (
-            <Button
-              key={v.key}
-              size="sm"
-              variant={view === v.key ? "default" : "outline"}
-              onClick={() => setView(v.key)}
-            >
-              {v.label}
-            </Button>
-          ))}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1">
+            {VIEWS.map((v) => (
+              <Button
+                key={v.key}
+                size="sm"
+                variant={view === v.key ? "default" : "outline"}
+                onClick={() => setView(v.key)}
+              >
+                {v.label}
+              </Button>
+            ))}
+          </div>
+
+          <Select
+            value={filter.type || undefined}
+            onValueChange={(v) =>
+              setFilter((f) => ({ ...f, type: v === "__all__" ? "" : (v ?? "") }))
+            }
+          >
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="All types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All types</SelectItem>
+              {types.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <Select
-          value={filter.type || undefined}
-          onValueChange={(v) =>
-            setFilter((f) => ({ ...f, type: v === "__all__" ? "" : (v ?? "") }))
-          }
-        >
-          <SelectTrigger className="w-[130px]">
-            <SelectValue placeholder="All types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="__all__">All types</SelectItem>
-            {types.map((t) => (
-              <SelectItem key={t} value={t}>
-                {t}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <div className="flex-1" />
+        <div className="hidden sm:block flex-1" />
 
         <form onSubmit={handleSearch} className="flex items-center gap-2">
           <Input
@@ -147,7 +172,7 @@ export default function CardBrowser() {
             value={filter.q}
             onChange={(e) => setFilter((f) => ({ ...f, q: e.target.value }))}
             placeholder="Search vocab or phrases..."
-            className="w-[220px]"
+            className="w-full sm:w-[220px]"
           />
           <Button type="submit" variant="default" className="shrink-0">
             Go

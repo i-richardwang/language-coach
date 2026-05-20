@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, type Card as CardType } from "@/api";
 import Card from "@/components/Card";
 import { Button } from "@/components/ui/button";
+import { Shuffle } from "lucide-react";
 
 const BATCH_SIZE = 8;
 
@@ -41,7 +42,7 @@ export default function Daily() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-end justify-between mb-6">
+      <div className="flex items-end justify-between mb-6 max-w-2xl mx-auto">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Daily Review</h2>
           <p className="text-sm text-muted-foreground mt-1 font-mono">
@@ -53,7 +54,7 @@ export default function Daily() {
           </p>
         </div>
         <Button variant="outline" onClick={load} disabled={loading}>
-          🎲 Shuffle
+          <Shuffle size={14} /> Shuffle
         </Button>
       </div>
 
@@ -70,7 +71,7 @@ export default function Daily() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 max-w-2xl mx-auto">
           {cards.map((c) => (
             <Card
               key={c.id}
